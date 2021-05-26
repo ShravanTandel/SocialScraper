@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+
+<style>
+    #pageloader
+{
+  background: rgba( 255, 255, 255, 0.8 );
+  display: none;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+}
+
+#pageloader img
+{
+  left: 43%;
+  margin-left: -50px;
+  margin-top: -50px;
+  position: absolute;
+  top: 33%;
+  
+}
+
+/* #pageloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: #fff;
+}
+
+#pageloader:before {
+  content: "";
+  position: fixed;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+  border: 6px solid #2487ce;
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: animate-pageloader 1s linear infinite;
+  animation: animate-pageloader 1s linear infinite;
+}
+
+@-webkit-keyframes animate-pageloader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate-pageloader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} */
+
+</style>
+<body>
+    <div id="pageloader">
+       <!-- <img src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." /> -->
+       <img src="{% static 'assets/img/loading2.gif' %}" alt="loading">
+    </div>
+    {% if request.method != 'POST' %}
+    <div class="container">
+        <h1>Instagram</h1>
+        <form id="myform" method="POST">
+            {% csrf_token %}
+            <label for="username">User Name:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="instaname">Insta UserName:</label>
+            <input type="text" name="instaname" id="instaname" required>
+            <input id="progress-bar-trigger" class="btn btn-primary" type="submit" value="Start">
+        </form>
+    </div>
+    {% endif %}
+        {% if request.method == 'POST' %}
+        <div class="container">
+            <a class="btn btn-primary" href="/"><i class="bi bi-arrow-left-short"></i>Go back</a><br>
+            <div class="container">
+                <div class="row">
+                    {% for i in imagesindb %}
+                        <div class="col-4">
+                            <div class="card" style="width: 18rem;">
+                                <img src="{{ i.image.url }}" class="card-img-top" alt="Photo">
+                                <div class="card-body">
+                                  <!-- <a href="{% url 'download' i.id instaname %}" class="btn btn-primary">Download</a> -->
+                                  <a href="{{ i.image.url}}" download="{{ i.image.url}}" class="btn btn-outline-dark">Download</a>
+                                </div>
+                              </div>
+                        </div>
+                    {% endfor %}
+                </div>
+              </div>
+        </div>
+        {% endif %}
+
+    <script>
+        $(document).ready(function(){
+                  $("#myform").on("submit", function(){
+                    $("#pageloader").fadeIn();
+                  });//submit
+        });//document ready
+    </script>
+</body>
+</html>
+
+{% endblock %}

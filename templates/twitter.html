@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<style>
+    #pageloader
+{
+  background: rgba( 255, 255, 255, 0.8 );
+  display: none;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+}
+
+#pageloader img
+{
+  left: 43%;
+  margin-left: -50px;
+  margin-top: -50px;
+  position: absolute;
+  top: 33%;
+  
+}
+</style>
+<body>
+    <div id="pageloader">
+        <!-- <img src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." /> -->
+        <img src="{% static 'assets/img/loading2.gif' %}" alt="loading">
+    </div>
+    
+
+    <div class="container">
+        {% if request.method != 'POST' %}
+        <h1>Twitter</h1>
+        <form id="myform" method="POST">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password">
+            <label for="nooftweets">Number of tweets:</label>
+            <input type="text" name="nooftweets" id="nooftweets">
+            <label for="search">Search:</label>
+            <input type="text" name="search" id="search">
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+        {% endif %}
+
+        {% if request.method == 'POST' %}
+        <div class="container mt-2">
+            <a class="btn btn-primary" href="/twitter"><i class="bi bi-arrow-left-short"></i>Go back</a><br>
+        </div>
+
+        <div class="mt-2">
+            <h4>Searched Tweet:</h4>{{ search }} <br>
+        <h4>Number of tweets:</h4>{{ length }} <br>
+        <a href="{% url 'downloadtweetscsv' search %}" class="btn btn-outline-dark">Download CSV</a>
+        </div>
+        {% endif %}
+    </div>
+
+<script>
+    $(document).ready(function(){
+    $("#myform").on("submit", function(){
+    $("#pageloader").fadeIn();
+  });//submit
+});//document ready
+</script>
+</body>
+</html>
+
+{% endblock %}
