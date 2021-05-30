@@ -109,13 +109,16 @@ def downloadtweetscsv(request,filename):
 
 @login_required(login_url = '/login')
 def instagram(request):
+    user1 = get_object_or_404(User, id = request.user.id)
     if request.method == 'POST':
         username = request.POST.get("username")
         password = request.POST.get("password")
         instaname = request.POST.get("instaname")
         image_urls = instabot.bot(username,password,instaname)
-        user1 = get_object_or_404(User, username = request.user.username)
-        print(request.user.username)
+        user1 = get_object_or_404(User, id = request.user.id)
+        username1 = get_object_or_404(User, username = request.user.username)
+
+        print(request.user)
         l = len(image_urls)-1
 
         for i,image_url in enumerate(image_urls):
@@ -130,19 +133,19 @@ def instagram(request):
                         break
                     lf.write(block)
                 image = ModelWithImage()
-                image.user = user1
+                image.user = request.user
                 image.url = image_url
                 image.save()
-                image.image.save(file_name+".jpg", files.File(lf))
-                imagesindb = ModelWithImage.objects.all()
+                image.image.save(str(username1)+file_name+".jpg", files.File(lf))
+        imagesindb = ModelWithImage.objects.filter(user = request.user)
         image_len = len(image_urls)
         time.sleep(1)
         return render(request, "instagram.html",{"imagesindb":imagesindb,"image_len":image_len,"instaname":instaname})
-    i = ModelWithImage.objects.filter(user = request.user.id)
+    i = ModelWithImage.objects.filter(user = request.user)
     if i.exists:
         for j in i:
             j.delete()
-    t = ModelForTwitter.objects.filter(user = request.user.id)
+    t = ModelForTwitter.objects.filter(user = request.user)
     t.delete()
     return render(request,"instagram.html")
 
@@ -178,5 +181,9 @@ def download(request,id,instaname):
                 f.write(chunk)
     f.close()
     return redirect("/")
+
+def profile(request):
+    user1 = {'user':request.user}
+    return render(request,"profile.html",user1)
 
         
