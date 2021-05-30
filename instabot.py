@@ -13,17 +13,15 @@ import time
 from selenium.webdriver.chrome.options import Options
 
 
-#specify the path to chromedriver.exe (download and save on your computer)
-
-#open the webpage
+#bot is taking user's insta username, password and hashtag or username to be searched
 def bot(username1,password1,instaname1):
     PATH = "chrome/chromedriver.exe"
     driver = webdriver.Chrome(PATH)
     driver.get("http://www.instagram.com")
 
-    #target username
+    #Searching for username input field
     username = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name='username']")))
-    
+    #Searching for password input field
     password = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name='password']")))
 
     #enter username and password
@@ -35,7 +33,7 @@ def bot(username1,password1,instaname1):
     #target the login button and click it
     button = WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))).click()
 
-    #We are logged in!
+    #logged in!
 
     not_now = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[contains(text(), "Not Now")]'))).click()
     not_now2 = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[contains(text(), "Not Now")]'))).click()
@@ -45,19 +43,19 @@ def bot(username1,password1,instaname1):
     searchbox = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Search']")))
     searchbox.clear()
 
-    #search for the hashtag cat
+    #search for the hashtag or username
     keyword = instaname1
     searchbox.send_keys(keyword)
     
-    # Wait for 5 seconds
+    # Wait for 2 seconds
     time.sleep(2)
     searchbox.send_keys(Keys.ENTER)
     time.sleep(1)
     searchbox.send_keys(Keys.ENTER)
     time.sleep(1)
 
-    #scroll down to scrape more images
     # driver.execute_script("window.scrollTo(0, 4000);")
+    #scroll down to scrape more images
     lenOfPage = driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
     match=False
     images = list()
@@ -81,20 +79,4 @@ def bot(username1,password1,instaname1):
     print(len(res))
     return res
 
-    # print('Number of scraped images: ', len(images))
-    # for i in images:
-    #     print(i)
-
-
-    #path = os.getcwd()
-    #path = os.path.join(path, keyword[0:])
-
-    #create the directory
-    #os.mkdir(path)
-
-    #download images
-    # counter = 0
-    # for image in images:
-    #     save_as = os.path.join(path, keyword[1:] + str(counter) + '.jpg')
-    #     wget.download(image, save_as)
-    #     counter += 1
+    #here the bot returns a list of image urls
